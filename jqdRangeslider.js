@@ -112,6 +112,8 @@ function createJQDRangeslider (rangeMin, rangeMax, containerSelector) {
             if (dd.attr.indexOf("drag") > -1) {
                 props.left = Math.min(dd.limit.right, Math.max(dd.offsetX - $con.offset().left, 0));
             }
+            props.left = Math.round(props.left);
+            props.width = Math.round(props.width);
             $(this).css(props);
             updateRangeFromUI();
         });
@@ -130,6 +132,8 @@ function createJQDRangeslider (rangeMin, rangeMax, containerSelector) {
             props.width = Math.max(dragWidth * ratio, 10);
         }
 
+        props.left = Math.round(props.left);
+        props.width = Math.round(props.width);
         $(".drag").css(props);
         updateRangeFromUI();
     });
@@ -141,6 +145,8 @@ function createJQDRangeslider (rangeMin, rangeMax, containerSelector) {
         var dragWidth = parseFloat($(".drag").css("width"));
         var conWidth = parseFloat($con.css("width"));
         props.left = Math.min(conWidth - dragWidth, Math.max(x - dragWidth / 2, 0));
+        props.left = Math.round(props.left);
+        props.width = Math.round(props.width);
         $(".drag").css(props);
         updateRangeFromUI();
     });
@@ -156,6 +162,11 @@ function createJQDRangeslider (rangeMin, rangeMax, containerSelector) {
         sliderRange.end = e;
 
         updateUIFromRange();
+
+        //Fire change listeners
+        changeListeners.forEach(function (callback) {
+            callback({begin: sliderRange.begin, end: sliderRange.end});
+        });
     }
 
 

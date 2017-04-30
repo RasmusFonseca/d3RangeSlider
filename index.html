@@ -3,6 +3,15 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
+    <!-- Stolen from https://www.w3schools.com/w3css/tryit.asp?filename=tryw3css_templates_photo2&stacked=h -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <!-- Dependencies -->
     <script src="jquery-1.7.2.js"></script>
     <script src="jquery.event.drag-2.2.js"></script>
@@ -16,6 +25,7 @@
 
     <title>Jquery-drag range slider</title>
 
+
     <style type="text/css">
         #slider-container{
             position: relative;
@@ -23,22 +33,105 @@
             height:20px;
             background-color: #eeeef5;
         }
+
+        body, h1, h2 {
+            font-family: "Raleway", Arial, sans-serif;
+        }
+        h1, h2 {
+            text-align: center;
+            margin:0.8em;
+        }
+        h1 {
+            letter-spacing: 6px;
+            margin-bottom:1.5em;
+        }
+        h2 {
+            margin-bottom:1em;
+        }
+        #range-label {
+            text-align: center;
+        }
+        .section{
+            margin-bottom:5em;
+            font-size: 1.5em;
+        }
+        .footer{
+            background-color: #F8F8FA;
+            padding: 30px;
+        }
+        * {
+            box-sizing: content-box;
+            -moz-box-sizing: content-box;
+            -webkit-box-sizing: content-box;
+        }
     </style>
 </head>
 <body>
 
-<h1>Range slider demo based on jquery drag</h1>
+<div class="container">
+    <h1>JQuery-drag range slider</h1>
 
-<div id="slider-container"></div>
+    <!-- Slider example -->
+    <div class="section">
 
-<div id="range-label"></div>
+        <h2>Drag the bar to select a range</h2>
+        <div id="slider-container"></div>
+        <div id="range-label">0 - 0</div>
 
-<script type="text/javascript">
-    var slider = createJQDRangeslider(0, 100, "#slider-container")
+        <script type="text/javascript">
+            var slider = createJQDRangeslider(0, 100, "#slider-container");
 
-    slider.onChange(function(newRange){
-        $("#range-label").text(newRange.begin + " - " + newRange.end);
-    })
-</script>
+            slider.onChange(function(newRange){
+                $("#range-label").text(newRange.begin + " - " + newRange.end);
+            })
+        </script>
+    </div>
+
+
+    <!-- Slider code -->
+    <div class="section">
+        <h2>Embed the range slider</h2>
+        <pre style='color:#000020;background:#f6f8ff;'><span style='color:#308080; '>&lt;</span><span style='color:#003060; '>div</span> id<span style='color:#308080; '>=</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>slider-container</span><span style='color:#800000; '>"</span><span style='color:#308080; '>></span><span style='color:#308080; '>&lt;</span><span style='color:#308080; '>/</span><span style='color:#003060; '>div</span><span style='color:#308080; '>></span>
+<span style='color:#308080; '>&lt;</span><span style='color:#003060; '>div</span> id<span style='color:#308080; '>=</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>range-label</span><span style='color:#800000; '>"</span><span style='color:#308080; '>></span><span style='color:#008c00; '>0</span> <span style='color:#308080; '>-</span> <span style='color:#008c00; '>0</span><span style='color:#308080; '>&lt;</span><span style='color:#308080; '>/</span><span style='color:#003060; '>div</span><span style='color:#308080; '>></span>
+
+<span style='color:#308080; '>&lt;</span>script type<span style='color:#308080; '>=</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>text/javascript</span><span style='color:#800000; '>"</span><span style='color:#308080; '>></span>
+    var slider <span style='color:#308080; '>=</span> createJQDRangeslider<span style='color:#308080; '>(</span><span style='color:#008c00; '>0</span><span style='color:#308080; '>,</span> <span style='color:#008c00; '>100</span><span style='color:#308080; '>,</span> <span style='color:#800000; '>"</span><span style='color:#1060b6; '>#slider-container</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+    slider<span style='color:#308080; '>.</span>onChange<span style='color:#308080; '>(</span>function<span style='color:#308080; '>(</span>newRange<span style='color:#308080; '>)</span>{
+        $<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>#range-label</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#308080; '>.</span>text<span style='color:#308080; '>(</span>newRange<span style='color:#308080; '>.</span>begin <span style='color:#308080; '>+</span> <span style='color:#800000; '>"</span><span style='color:#1060b6; '> - </span><span style='color:#800000; '>"</span> <span style='color:#308080; '>+</span> newRange<span style='color:#308080; '>.</span>end<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+    }<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+<span style='color:#308080; '>&lt;</span><span style='color:#308080; '>/</span>script<span style='color:#308080; '>></span>
+</pre>
+    </div>
+
+
+    <div class="section" ">
+        <h2>Fetch the code</h2>
+        <div style="text-align: center;">
+            <a href="https://github.com/RasmusFonseca/JQDRangeSlider">github.com/RasmusFonseca/JQDRangeSlider</a>
+        </div>
+
+    </div>
+
+    <div class="section">
+        <h2>Technical details</h2>
+        <ul>
+            <li>Depends on <a href="http://threedubmedia.com/code/event/drag">jquery.event.drag</a></li>
+            <li>Must be styled through CSS. Use <a href="jqdRangeSlider.css">jqdRangeSlider.css</a> as a template</li>
+            <li>Container must have <code>position: relative</code> in the style</li>
+            <li>Range can be modified from JS using for example <code>slider.range(10,20)</code></li>
+        </ul>
+    </div>
+
+
+</div><!-- /.container -->
+<div class="footer">
+    <div class="container">
+        <script type="text/javascript" src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
+        <div class="LI-profile-badge"  data-version="v1" data-size="large" data-locale="en_US" data-type="horizontal" data-theme="light" data-vanity="rasmusfonseca"><a class="LI-simple-link" href='https://www.linkedin.com/in/rasmusfonseca?trk=profile-badge'>Rasmus Fonseca</a></div>
+    </div>
+
+</div>
+
 </body>
 </html>
