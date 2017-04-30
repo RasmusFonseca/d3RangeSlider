@@ -1,0 +1,30 @@
+<html>
+<head>
+    <!-- Dependencies -->
+    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery-1.7.2.js"></script>
+    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery.event.drag-2.2.js"></script>
+    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery.event.drag.live-2.2.js"></script>
+
+    <!-- Range slider code -->
+    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jqdRangeslider.js"></script>
+
+    <!-- Range slider style -->
+    <link href="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jqdRangeslider.css" rel="stylesheet">
+
+    <style type="text/css">
+        #slider-container {
+            position: relative;
+            height:30px;
+            background-color: #eeeef5;
+        }
+    </style>
+</head>
+<body>
+
+<div id="slider-container"></div>
+<script type="text/javascript">
+    var slider = createJQDRangeslider(0, 100, "#slider-container");
+</script>
+
+</body>
+</html>
