@@ -1,0 +1,30 @@
+
+.drag {
+    position: absolute;
+    border: 1px solid #AAB;
+    background: #BCE;
+    height: 100%;
+    width: 58px;
+    top: 0px;
+    cursor: move;
+    margin:-0.5px;
+}
+.drag .handle {
+    position: absolute;
+    height: 6px;
+    width: 6px;
+    border: 1px solid #AAB;
+    background: #9AC;
+}
+.drag .EE {
+    right: -4px;
+    cursor: e-resize;
+}
+.drag .WW {
+    cursor: w-resize;
+    left: -4px;
+}
+.drag .EE, .drag .WW {
+    top: 50%;
+    margin-top: -4px;
+}

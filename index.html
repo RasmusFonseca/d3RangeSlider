@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <!-- Dependencies -->
+    <script src="jquery-1.7.2.js"></script>
+    <script src="jquery.event.drag-2.2.js"></script>
+    <script src="jquery.event.drag.live-2.2.js"></script>
+
+    <!-- Range slider code -->
+    <script src="jqdRangeslider.js"></script>
+
+    <!-- Range slider style -->
+    <link href="jqdRangeslider.css" rel="stylesheet">
+
+    <title>Jquery-drag range slider</title>
+
+    <style type="text/css">
+        #slider-container{
+            position: relative;
+            border: 0px dashed gray;
+            height:20px;
+            background-color: #eeeef5;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Range slider demo based on jquery drag</h1>
+
+<div id="slider-container"></div>
+
+<div id="range-label"></div>
+
+<script type="text/javascript">
+    var slider = createJQDRangeslider(0, 100, "#slider-container")
+
+    slider.onChange(function(newRange){
+        $("#range-label").text(newRange.begin + " - " + newRange.end);
+    })
+</script>
+</body>
+</html>
