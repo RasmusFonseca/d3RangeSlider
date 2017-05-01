@@ -120,22 +120,7 @@ function createJQDRangeslider (rangeMin, rangeMax, containerSelector) {
 
     //Reposition slider on window resize
     $(window).resize(function (ev) {
-        var new_width = parseFloat($con.css("width"));
-        var ratio = new_width / con_width;
-        con_width = new_width;
-
-        var props = {};
-        props.left = parseFloat($(".drag").css("left")) * ratio;
-
-        var dragWidth = parseFloat($(".drag").css("width"));
-        if (dragWidth > 10.5) {
-            props.width = Math.max(dragWidth * ratio, 10);
-        }
-
-        props.left = Math.round(props.left);
-        props.width = Math.round(props.width);
-        $(".drag").css(props);
-        updateRangeFromUI();
+        updateUIFromRange();
     });
 
     //Click on bar
