@@ -13,7 +13,7 @@ using a slider. Check out [this site](https://rasmusfonseca.github.io/JQDRangeSl
     <script src="https://cdn.rawgit.com/RasmusFonseca/d3RangeSlider/master/d3RangeSlider.js"></script>
 
     <!-- Range slider style -->
-    <link href="https://cdn.rawgit.com/RasmusFonseca/d3RangeSlider/master/d3Rangeslider.css" rel="stylesheet">
+    <link href="https://cdn.rawgit.com/RasmusFonseca/d3RangeSlider/master/d3RangeSlider.css" rel="stylesheet">
 
     <style type="text/css">
         #slider-container {
@@ -36,13 +36,13 @@ using a slider. Check out [this site](https://rasmusfonseca.github.io/JQDRangeSl
 
 This creates a slider that spans the range from 0 - 100 (both inclusive) and adds it to the container-div. If you 
 want diffent placements of the handles or background colors, the 
-[supplied CSS](https://github.com/RasmusFonseca/d3RangeSlider/blob/master/d3Rangeslider.css) can easily be adapted. A 
+[supplied CSS](https://github.com/RasmusFonseca/d3RangeSlider/blob/master/d3RangeSlider.css) can easily be adapted. A 
 couple of functions are defined on the `slider` object:
 
 `slider.range()` returns the currently selected range as an `{begin: number, end: number}`-object. 
 
 `slider.range(s,b)` sets the range to span the interval from `s` to `b` (both included). If `s>b` the two numbers 
-are swapped. If `s` or `b` are outside the range limits specified in the call to `createJQDRangeslider` a warning is 
+are swapped. If `s` or `b` are outside the range limits specified in the call to `createD3Rangeslider` a warning is 
 printed in the console, and the values are clamped to the valid range limits.
 
 `slider.range(s)` moves the range without changing its width and so it starts at `s`. If the move causes the range to
