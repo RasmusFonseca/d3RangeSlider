@@ -7,15 +7,13 @@ using a slider. Check out [this site](https://rasmusfonseca.github.io/JQDRangeSl
 <html>
 <head>
     <!-- Dependencies -->
-    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery-1.7.2.js"></script>
-    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery.event.drag-2.2.js"></script>
-    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery.event.drag.live-2.2.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
 
     <!-- Range slider code -->
-    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jqdRangeslider.js"></script>
+    <script src="https://cdn.rawgit.com/RasmusFonseca/d3RangeSlider/master/d3RangeSlider.js"></script>
 
     <!-- Range slider style -->
-    <link href="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jqdRangeslider.css" rel="stylesheet">
+    <link href="https://cdn.rawgit.com/RasmusFonseca/d3RangeSlider/master/d3Rangeslider.css" rel="stylesheet">
 
     <style type="text/css">
         #slider-container {
@@ -29,7 +27,7 @@ using a slider. Check out [this site](https://rasmusfonseca.github.io/JQDRangeSl
 
 <div id="slider-container"></div>
 <script type="text/javascript">
-    var slider = createJQDRangeslider(0, 100, "#slider-container");
+    var slider = createD3RangeSlider(0, 100, "#slider-container");
 </script>
 
 </body>
@@ -38,7 +36,7 @@ using a slider. Check out [this site](https://rasmusfonseca.github.io/JQDRangeSl
 
 This creates a slider that spans the range from 0 - 100 (both inclusive) and adds it to the container-div. If you 
 want diffent placements of the handles or background colors, the 
-[supplied CSS](https://github.com/RasmusFonseca/JQDRangeSlider/blob/master/jqdRangeslider.css) can easily be adapted. A 
+[supplied CSS](https://github.com/RasmusFonseca/d3RangeSlider/blob/master/d3Rangeslider.css) can easily be adapted. A 
 couple of functions are defined on the `slider` object:
 
 `slider.range()` returns the currently selected range as an `{begin: number, end: number}`-object. 
@@ -56,7 +54,7 @@ a call to `callback` with a single `{begin: number, end: number}`-argument that 
 This example illustrates the use of these functions
 ```javascript
 // Create slider spanning the range from 0 to 10
-var slider = createJQDRangeslider(0, 10, "#slider-container");
+var slider = createD3RangeSlider(0, 10, "#slider-container");
 
 // Range changes to 3-6
 slider.range(3,6); 
@@ -68,7 +66,7 @@ slider.onChange(function(newRange){
 
 // Range changes to 7-10
 // Warning is printed that you attempted to set a range (8-11) outside the limits (0-10)
-// {begin: 7, end: 10} is printed in the console because of the listener
+// "{begin: 7, end: 10}" is printed in the console because of the listener
 slider.range(8);
 ```
 

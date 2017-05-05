@@ -1,15 +1,13 @@
 <html>
 <head>
     <!-- Dependencies -->
-    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery-1.7.2.js"></script>
-    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery.event.drag-2.2.js"></script>
-    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jquery.event.drag.live-2.2.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
 
     <!-- Range slider code -->
-    <script src="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jqdRangeslider.js"></script>
+    <script src="https://cdn.rawgit.com/RasmusFonseca/d3RangeSlider/master/d3RangeSlider.js"></script>
 
     <!-- Range slider style -->
-    <link href="https://cdn.rawgit.com/RasmusFonseca/JQDRangeSlider/master/jqdRangeslider.css" rel="stylesheet">
+    <link href="https://cdn.rawgit.com/RasmusFonseca/d3RangeSlider/master/d3RangeSlider.css" rel="stylesheet">
 
     <style type="text/css">
         #slider-container {
@@ -23,7 +21,7 @@
 
 <div id="slider-container"></div>
 <script type="text/javascript">
-    var slider = createJQDRangeslider(0, 100, "#slider-container");
+    var slider = createD3RangeSlider(0, 100, "#slider-container");
 </script>
 
 </body>
