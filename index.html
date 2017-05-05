@@ -13,17 +13,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Dependencies -->
-    <script src="jquery-1.7.2.js"></script>
-    <script src="jquery.event.drag-2.2.js"></script>
-    <script src="jquery.event.drag.live-2.2.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
 
     <!-- Range slider code -->
-    <script src="jqdRangeslider.js"></script>
+    <script src="d3RangeSlider.js"></script>
 
     <!-- Range slider style -->
-    <link href="jqdRangeslider.css" rel="stylesheet">
+    <link href="d3RangeSlider.css" rel="stylesheet">
 
-    <title>Jquery-drag range slider</title>
+    <title>D3 range slider</title>
 
 
     <style type="text/css">
@@ -44,6 +42,7 @@
         h1 {
             letter-spacing: 6px;
             margin-bottom:1.5em;
+            font-weight: 900;
         }
         h2 {
             margin-bottom:1em;
@@ -59,17 +58,12 @@
             background-color: #F8F8FA;
             padding: 30px;
         }
-        * {
-            box-sizing: content-box;
-            -moz-box-sizing: content-box;
-            -webkit-box-sizing: content-box;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>JQuery-drag range slider</h1>
+    <h1>D3 range slider</h1>
 
     <!-- Slider example -->
     <div class="section">
@@ -79,11 +73,11 @@
         <div id="range-label">0 - 10</div>
 
         <script type="text/javascript">
-            var slider = createJQDRangeslider(0, 100, "#slider-container");
+            var slider = createD3RangeSlider(0, 100, "#slider-container");
 
             slider.onChange(function(newRange){
-                $("#range-label").text(newRange.begin + " - " + newRange.end);
-            })
+                d3.select("#range-label").text(newRange.begin + " - " + newRange.end);
+            });
 
             slider.range(0,10);
         </script>
@@ -94,14 +88,16 @@
     <div class="section">
         <h2>Embed the range slider</h2>
         <pre style='color:#000020;background:#f6f8ff;'><span style='color:#308080; '>&lt;</span><span style='color:#003060; '>div</span> id<span style='color:#308080; '>=</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>slider-container</span><span style='color:#800000; '>"</span><span style='color:#308080; '>></span><span style='color:#308080; '>&lt;</span><span style='color:#308080; '>/</span><span style='color:#003060; '>div</span><span style='color:#308080; '>></span>
-<span style='color:#308080; '>&lt;</span><span style='color:#003060; '>div</span> id<span style='color:#308080; '>=</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>range-label</span><span style='color:#800000; '>"</span><span style='color:#308080; '>></span><span style='color:#008c00; '>0</span> <span style='color:#308080; '>-</span> <span style='color:#008c00; '>0</span><span style='color:#308080; '>&lt;</span><span style='color:#308080; '>/</span><span style='color:#003060; '>div</span><span style='color:#308080; '>></span>
+<span style='color:#308080; '>&lt;</span><span style='color:#003060; '>div</span> id<span style='color:#308080; '>=</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>range-label</span><span style='color:#800000; '>"</span><span style='color:#308080; '>></span><span style='color:#008c00; '>0</span> <span style='color:#308080; '>-</span> <span style='color:#008c00; '>10</span><span style='color:#308080; '>&lt;</span><span style='color:#308080; '>/</span><span style='color:#003060; '>div</span><span style='color:#308080; '>></span>
 
 <span style='color:#308080; '>&lt;</span>script type<span style='color:#308080; '>=</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>text/javascript</span><span style='color:#800000; '>"</span><span style='color:#308080; '>></span>
-    var slider <span style='color:#308080; '>=</span> createJQDRangeslider<span style='color:#308080; '>(</span><span style='color:#008c00; '>0</span><span style='color:#308080; '>,</span> <span style='color:#008c00; '>100</span><span style='color:#308080; '>,</span> <span style='color:#800000; '>"</span><span style='color:#1060b6; '>#slider-container</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+    var slider <span style='color:#308080; '>=</span> createD3RangeSlider<span style='color:#308080; '>(</span><span style='color:#008c00; '>0</span><span style='color:#308080; '>,</span> <span style='color:#008c00; '>100</span><span style='color:#308080; '>,</span> <span style='color:#800000; '>"</span><span style='color:#1060b6; '>#slider-container</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
 
     slider<span style='color:#308080; '>.</span>onChange<span style='color:#308080; '>(</span>function<span style='color:#308080; '>(</span>newRange<span style='color:#308080; '>)</span>{
-        $<span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>#range-label</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#308080; '>.</span>text<span style='color:#308080; '>(</span>newRange<span style='color:#308080; '>.</span>begin <span style='color:#308080; '>+</span> <span style='color:#800000; '>"</span><span style='color:#1060b6; '> - </span><span style='color:#800000; '>"</span> <span style='color:#308080; '>+</span> newRange<span style='color:#308080; '>.</span>end<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+        d3<span style='color:#308080; '>.</span><span style='color:#400000; '>select</span><span style='color:#308080; '>(</span><span style='color:#800000; '>"</span><span style='color:#1060b6; '>#range-label</span><span style='color:#800000; '>"</span><span style='color:#308080; '>)</span><span style='color:#308080; '>.</span>text<span style='color:#308080; '>(</span>newRange<span style='color:#308080; '>.</span>begin <span style='color:#308080; '>+</span> <span style='color:#800000; '>"</span><span style='color:#1060b6; '> - </span><span style='color:#800000; '>"</span> <span style='color:#308080; '>+</span> newRange<span style='color:#308080; '>.</span>end<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
     }<span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
+
+    slider<span style='color:#308080; '>.</span>range<span style='color:#308080; '>(</span><span style='color:#008c00; '>0</span><span style='color:#308080; '>,</span><span style='color:#008c00; '>10</span><span style='color:#308080; '>)</span><span style='color:#406080; '>;</span>
 <span style='color:#308080; '>&lt;</span><span style='color:#308080; '>/</span>script<span style='color:#308080; '>></span>
 </pre>
     </div>
@@ -110,7 +106,7 @@
     <div class="section">
         <h2>Fetch the code</h2>
         <div style="text-align: center;">
-            <a href="https://github.com/RasmusFonseca/JQDRangeSlider">github.com/RasmusFonseca/JQDRangeSlider</a>
+            <a href="https://github.com/RasmusFonseca/d3RangeSlider">github.com/RasmusFonseca/d3RangeSlider</a>
         </div>
 
     </div>
@@ -118,8 +114,8 @@
     <div class="section">
         <h2>Technical details</h2>
         <ul>
-            <li>Depends on <a href="http://threedubmedia.com/code/event/drag">jquery.event.drag</a></li>
-            <li>Must be styled through CSS. Use <a href="jqdRangeslider.css">jqdRangeSlider.css</a> as a template</li>
+            <li>Depends on <a href="https://d3js.org/">D3 v3</a></li>
+            <li>Must be styled through CSS. Use <a href="d3RangeSlider.css">d3RangeSlider.css</a> as a template</li>
             <li>Container must have <code>position: relative</code> in the style</li>
             <li>Range can be modified from JS using for example <code>slider.range(10,20)</code></li>
         </ul>

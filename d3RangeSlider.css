@@ -1,5 +1,5 @@
 
-.drag {
+.slider {
     position: absolute;
     border: 1px solid #AAB;
     background: #BCE;
@@ -7,24 +7,33 @@
     width: 58px;
     top: 0px;
     cursor: move;
-    margin:-0.5px;
+    /*margin:-0.5px;*/
 }
-.drag .handle {
+
+.slider .handle {
     position: absolute;
-    height: 6px;
-    width: 6px;
+    height: 9px;
+    width: 9px;
     border: 1px solid #AAB;
     background: #9AC;
+
+    /* Support for bootstrap */
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
-.drag .EE {
+
+.slider .EE {
     right: -4px;
     cursor: e-resize;
 }
-.drag .WW {
+
+.slider .WW {
     cursor: w-resize;
     left: -4px;
 }
-.drag .EE, .drag .WW {
+
+.slider .EE, .slider .WW {
     top: 50%;
     margin-top: -4px;
 }

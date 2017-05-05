@@ -1,9 +1,9 @@
-/*jslint browser:true */
+/*jslint browser: true */
 /*jslint this */
 
 
 /**
- * Create a jquery-drag range slider that selects ranges between `rangeMin` and `rangeMax`, and add it to the
+ * Create a d3 range slider that selects ranges between `rangeMin` and `rangeMax`, and add it to the
  * `containerSelector`. The contents of the container is laid out as follows
  * <code>
  * <div class="drag">
@@ -11,7 +11,7 @@
  *     <div class="handle EE"></div>
  * </div>
  * </code>
- * The appearance can be changed with CSS, but the `position` must be `relative`, and the width of `.drag` should be
+ * The appearance can be changed with CSS, but the `position` must be `relative`, and the width of `.slider` should be
  * left unaltered.
  *
  * @param rangeMin Minimum value of the range
@@ -19,31 +19,27 @@
  * @param containerSelector A CSS selection indicating exactly one element in the document
  * @returns {{range: function(number, number), onChange: function(function)}}
  */
-function createJQDRangeslider (rangeMin, rangeMax, containerSelector) {
+function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
     "use strict";
 
     var minWidth = 10;
 
     var sliderRange = {begin: rangeMin, end: rangeMin};
     var changeListeners = [];
-    var $container;
-    var $drag;
+    var container = d3.select(containerSelector);
     var dragging = false; //Used to avoid rounding errors when recomputing sliderRange from UI
 
 
     //Create elements in container
-    var $drg = $(document.createElement("div"));
-    $drg.attr("class", "drag");
-    $drg.append( $(document.createElement("div")).attr("class", "handle WW") );
-    $drg.append( $(document.createElement("div")).attr("class", "handle EE") );
-    var $con = $(containerSelector);
-    $container = $con;
-    $con.append($drg);
-    var con_width = parseFloat($con.css("width"));
+    var slider = container
+        .append("div")
+        .attr("class", "slider");
+    var handleW = slider.append("div").attr("class", "handle WW");
+    var handleE = slider.append("div").attr("class", "handle EE");
 
-
+    /** Update the `left` and `width` attributes of `slider` based on `sliderRange` */
     function updateUIFromRange () {
-        var conW = parseFloat($container.css("width"));
+        var conW = parseFloat(container.style("width"));
         var rangeW = sliderRange.end - sliderRange.begin;
         var slope = (conW - minWidth) / (rangeMax - rangeMin);
         var uirangeW = minWidth + rangeW * slope;
@@ -53,17 +49,22 @@ function createJQDRangeslider (rangeMin, rangeMax, containerSelector) {
         }
         var uirangeL = ratio * (conW - uirangeW);
 
-        $drag.css("left", uirangeL + "px");
-        $drag.css("width", uirangeW + "px");
+        slider.style("left", uirangeL + "px");
+        slider.style("width", uirangeW + "px");
     }
 
+    /** Update the `sliderRange` based on the `left` and `width` attributes of `slider` */
     function updateRangeFromUI () {
-        var uirangeL = parseFloat($drag.css("left"));
-        var uirangeW = parseFloat($drag.css("width"));
-        var conW = parseFloat($container.css("width"));
+        var uirangeL = parseFloat(slider.style("left"));
+        var uirangeW = parseFloat(slider.style("width"));
+        var conW = parseFloat(container.style("width"));
         var slope = (conW - minWidth) / (rangeMax - rangeMin);
         var rangeW = (uirangeW - minWidth) / slope;
-        var uislope = (rangeMax - rangeMin - rangeW) / (conW - uirangeW);
+        if (conW == uirangeW) {
+            var uislope = 0;
+        } else {
+            var uislope = (rangeMax - rangeMin - rangeW) / (conW - uirangeW);
+        }
         var rangeL = rangeMin + uislope * uirangeL;
         var oldRangeW = sliderRange.end - sliderRange.begin;
         sliderRange.begin = Math.round(rangeL);
@@ -73,67 +74,94 @@ function createJQDRangeslider (rangeMin, rangeMax, containerSelector) {
             sliderRange.end = Math.round(rangeL + rangeW);
         }
 
+
         //Fire change listeners
         changeListeners.forEach(function (callback) {
             callback({begin: sliderRange.begin, end: sliderRange.end});
         });
     }
 
-
-    $drag = $(".drag")
-        .drag("start", function (ev, dd) {
-            dd.attr = $(ev.target).prop("className");
-            dd.width = $(this).width();
-            dd.height = $(this).height();
-
-            dd.limit = $con.offset();
-            dd.limit.right = $con.outerWidth() - $(this).outerWidth();
-
-            dragging = (dd.attr.indexOf("drag") > -1);
-
+    // configure drag behavior for handles and slider
+    var dragResizeE = d3.behavior.drag()
+        .on("dragstart", function () {
+            d3.event.sourceEvent.stopPropagation();
         })
-        .drag("end", function (ev, dd) {
-            dragging = false;
-        })
-        .drag(function (ev, dd) {
-
-            var props = {};
-            if (dd.attr.indexOf("EE") > -1) {
-                props.width = Math.min(Math.max(minWidth, dd.width + dd.deltaX), $con.innerWidth() - dd.originalX + $con.offset().left);
-            }
-            if (dd.attr.indexOf("WW") > -1) {
-                props.width = Math.max(minWidth, dd.width - dd.deltaX);
-                props.left = dd.originalX + dd.width - props.width - $con.offset().left;
-                if (props.left < 0) {
-                    props.width += props.left;
-                    props.left = 0;
-                }
-            }
-            if (dd.attr.indexOf("drag") > -1) {
-                props.left = Math.min(dd.limit.right, Math.max(dd.offsetX - $con.offset().left, 0));
-            }
-            props.left = Math.round(props.left);
-            props.width = Math.round(props.width);
-            $(this).css(props);
+        .on("drag", function () {
+            var dx = d3.event.dx;
+            if (dx == 0) return;
+            var conWidth = parseFloat(container.style("width"));
+            var newLeft = parseInt(slider.style("left"));
+            var newWidth = parseFloat(slider.style("width")) + dx;
+            newWidth = Math.max(newWidth, minWidth);
+            newWidth = Math.min(newWidth, conWidth - newLeft);
+            slider.style("width", newWidth + "px");
             updateRangeFromUI();
         });
 
-    //Reposition slider on window resize
-    $(window).resize(function (ev) {
-        updateUIFromRange();
-    });
+    var dragResizeW = d3.behavior.drag()
+        .on("dragstart", function () {
+            this.startX = d3.mouse(this)[0];
+            d3.event.sourceEvent.stopPropagation();
+        })
+        .on("drag", function () {
+            var dx = d3.mouse(this)[0] - this.startX;
+            if (dx==0) return;
+            var newLeft = parseFloat(slider.style("left")) + dx;
+            var newWidth = parseFloat(slider.style("width")) - dx;
+
+            if (newLeft < 0) {
+                newWidth += newLeft;
+                newLeft = 0;
+            }
+            if (newWidth < minWidth) {
+                newLeft -= minWidth - newWidth;
+                newWidth = minWidth;
+            }
+
+            slider.style("left", newLeft + "px");
+            slider.style("width", newWidth + "px");
+
+            updateRangeFromUI();
+        });
+
+    var dragMove = d3.behavior.drag()
+        .on("dragstart", function () {
+            d3.event.sourceEvent.stopPropagation();
+        })
+        .on("drag", function () {
+            var dx = d3.event.dx;
+            var conWidth = parseInt(container.style("width"));
+            var newLeft = parseInt(slider.style("left")) + dx;
+            var newWidth = parseInt(slider.style("width"));
+
+            newLeft = Math.max(newLeft, 0);
+            newLeft = Math.min(newLeft, conWidth - newWidth);
+            slider.style("left", newLeft + "px");
+
+            updateRangeFromUI();
+        });
+
+    handleE.call(dragResizeE);
+    handleW.call(dragResizeW);
+    slider.call(dragMove);
 
     //Click on bar
-    $con.mousedown(function (ev) {
+    container.on("mousedown", function (ev) {
         var x = ev.offsetX;
         var props = {};
-        var dragWidth = parseFloat($(".drag").css("width"));
-        var conWidth = parseFloat($con.css("width"));
-        props.left = Math.min(conWidth - dragWidth, Math.max(x - dragWidth / 2, 0));
+        var sliderWidth = parseFloat(slider.style("width"));
+        var conWidth = parseFloat(container.style("width"));
+        props.left = Math.min(conWidth - sliderWidth, Math.max(x - sliderWidth / 2, 0));
         props.left = Math.round(props.left);
         props.width = Math.round(props.width);
-        $(".drag").css(props);
+        slider.style("left", props.left + "px")
+            .style("width", props.width + "px");
         updateRangeFromUI();
+    });
+
+    //Reposition slider on window resize
+    window.addEventListener("resize", function () {
+        updateUIFromRange();
     });
 
 
