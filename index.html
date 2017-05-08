@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- Dependencies -->
-    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
 
     <!-- Range slider code -->
     <script src="d3RangeSlider.js"></script>
@@ -25,11 +25,9 @@
 
 
     <style type="text/css">
-        #slider-container{
-            position: relative;
-            border: 0px dashed gray;
-            height:30px;
-            background-color: #eeeef5;
+        #container{
+            height: 30px;
+
         }
 
         body, h1, h2 {
@@ -69,11 +67,11 @@
     <div class="section">
 
         <h2>Drag the bar to select a range</h2>
-        <div id="slider-container"></div>
+        <div id="container"></div>
         <div id="range-label">0 - 10</div>
 
         <script type="text/javascript">
-            var slider = createD3RangeSlider(0, 100, "#slider-container");
+            var slider = createD3RangeSlider(0, 100, "#container");
 
             slider.onChange(function(newRange){
                 d3.select("#range-label").text(newRange.begin + " - " + newRange.end);

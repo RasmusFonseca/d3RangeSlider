@@ -19,7 +19,7 @@
  * @param containerSelector A CSS selection indicating exactly one element in the document
  * @returns {{range: function(number, number), onChange: function(function)}}
  */
-function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
+function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton) {
     "use strict";
 
     var minWidth = 10;
@@ -28,10 +28,73 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
     var changeListeners = [];
     var container = d3.select(containerSelector);
     var dragging = false; //Used to avoid rounding errors when recomputing sliderRange from UI
+    var containerHeight = container.node().offsetHeight;
 
+    // Set up play button if requested
+    if (playButton) {
+        // Wrap an additional container inside the main one, and set up a box-layout, see also
+        // http://stackoverflow.com/questions/14319097/css-auto-resize-div-to-fit-container-width
+        var box = container.append("div")
+            .style("display", "box")
+            .style("display", "-moz-box")
+            .style("display", "-webkit-box")
+            .style("box-orient", "horizontal")
+            .style("-moz-box-orient", "horizontal")
+            .style("-webkit-box-orient", "horizontal");
+
+        var playBox = box.append("div")
+            .style("width", containerHeight + "px")
+            .style("height", containerHeight + "px")
+            .style("margin-right", "10px")
+            .style("box-flex", "0")
+            .style("-moz-box-flex", "0")
+            .style("-webkit-box-flex", "0")
+            .classed("play-container", true);
+
+        var sliderBox = box.append("div")
+            .style("position", "relative")
+            .style("min-width", (minWidth*2) + "px")
+            .style("height", containerHeight + "px")
+            .style("box-flex", "1")
+            .style("-moz-box-flex", "1")
+            .style("-webkit-box-flex", "1")
+            .classed("slider-container", true);
+
+        var playSVG = playBox.append("svg")
+            .attr("width", containerHeight + "px")
+            .attr("height", containerHeight + "px")
+            .style("overflow", "visible");
+
+        playSVG.append("circle")
+            .attr("cx", containerHeight / 2)
+            .attr("cy", containerHeight / 2)
+            .attr("r", containerHeight / 2)
+            .classed("button", true);
+
+
+        var h = containerHeight;
+        playSVG.append("rect")
+            .style("visibility", "hidden")
+            .attr("x", 0.3*h)
+            .attr("y", 0.3*h)
+            .attr("width", 0.4*h)
+            .attr("height", 0.4*h)
+            .classed("stop", true);
+
+        playSVG.append("polygon")
+            .attr("points", (0.37*h) + "," + (0.2*h) + " " + (0.37*h) + "," + (0.8*h) + " " + (0.75*h) + "," + (0.5*h))
+            .classed("play", true);
+
+    } else {
+        var sliderBox = container.append("div")
+            .style("position", "relative")
+            .style("height", containerHeight + "px")
+            .style("min-width", (minWidth*2) + "px")
+            .classed("slider-container", true);
+    }
 
     //Create elements in container
-    var slider = container
+    var slider = sliderBox
         .append("div")
         .attr("class", "slider");
     var handleW = slider.append("div").attr("class", "handle WW");
@@ -39,7 +102,7 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
 
     /** Update the `left` and `width` attributes of `slider` based on `sliderRange` */
     function updateUIFromRange () {
-        var conW = parseFloat(container.style("width"));
+        var conW = sliderBox.node().clientWidth;
         var rangeW = sliderRange.end - sliderRange.begin;
         var slope = (conW - minWidth) / (rangeMax - rangeMin);
         var uirangeW = minWidth + rangeW * slope;
@@ -57,7 +120,7 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
     function updateRangeFromUI () {
         var uirangeL = parseFloat(slider.style("left"));
         var uirangeW = parseFloat(slider.style("width"));
-        var conW = parseFloat(container.style("width"));
+        var conW = sliderBox.node().clientWidth; //parseFloat(container.style("width"));
         var slope = (conW - minWidth) / (rangeMax - rangeMin);
         var rangeW = (uirangeW - minWidth) / slope;
         if (conW == uirangeW) {
@@ -89,7 +152,7 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
         .on("drag", function () {
             var dx = d3.event.dx;
             if (dx == 0) return;
-            var conWidth = parseFloat(container.style("width"));
+            var conWidth = sliderBox.node().clientWidth; //parseFloat(container.style("width"));
             var newLeft = parseInt(slider.style("left"));
             var newWidth = parseFloat(slider.style("width")) + dx;
             newWidth = Math.max(newWidth, minWidth);
@@ -130,7 +193,7 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
         })
         .on("drag", function () {
             var dx = d3.event.dx;
-            var conWidth = parseInt(container.style("width"));
+            var conWidth = sliderBox.node().clientWidth; //parseInt(container.style("width"));
             var newLeft = parseInt(slider.style("left")) + dx;
             var newWidth = parseInt(slider.style("width"));
 
@@ -146,11 +209,11 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
     slider.call(dragMove);
 
     //Click on bar
-    container.on("mousedown", function (ev) {
+    sliderBox.on("mousedown", function (ev) {
         var x = ev.offsetX;
         var props = {};
         var sliderWidth = parseFloat(slider.style("width"));
-        var conWidth = parseFloat(container.style("width"));
+        var conWidth = sliderBox.node().clientWidth; //parseFloat(container.style("width"));
         props.left = Math.min(conWidth - sliderWidth, Math.max(x - sliderWidth / 2, 0));
         props.left = Math.round(props.left);
         props.width = Math.round(props.width);
@@ -163,6 +226,10 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector) {
     window.addEventListener("resize", function () {
         updateUIFromRange();
     });
+
+
+
+
 
 
     function onChange(callback){
