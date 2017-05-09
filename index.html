@@ -68,13 +68,13 @@
 
         <h2>Drag the bar to select a range</h2>
         <div id="container"></div>
-        <div id="range-label">0 - 10</div>
+        <div id="range-label"></div>
 
         <script type="text/javascript">
-            var slider = createD3RangeSlider(0, 10000, "#container");
+            var slider = createD3RangeSlider(0, 100, "#container");
 
             slider.onChange(function(newRange){
-                d3.select("#range-label").text(newRange.begin + " - " + newRange.end);
+                d3.select("#range-label").html(newRange.begin + " &mdash; " + newRange.end);
             });
 
             slider.range(0,10);
