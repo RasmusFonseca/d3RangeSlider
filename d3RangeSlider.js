@@ -67,14 +67,11 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             .attr("height", containerHeight + "px")
             .style("overflow", "visible");
 
-        playSVG.append("circle")
+        var circleSymbol = playSVG.append("circle")
             .attr("cx", containerHeight / 2)
             .attr("cy", containerHeight / 2)
             .attr("r", containerHeight / 2)
-            .style("cursor", "pointer")
-            .on("click", togglePlayButton)
             .classed("button", true);
-
 
         var h = containerHeight;
         var stopSymbol = playSVG.append("rect")
@@ -83,15 +80,28 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             .attr("width", 0.4*h)
             .attr("height", 0.4*h)
             .style("visibility", "hidden")
-            .style("cursor", "pointer")
-            .on("click", togglePlayButton)
             .classed("stop", true);
 
         var playSymbol = playSVG.append("polygon")
             .attr("points", (0.37*h) + "," + (0.2*h) + " " + (0.37*h) + "," + (0.8*h) + " " + (0.75*h) + "," + (0.5*h))
+            .classed("play", true);
+
+        //Circle that captures mouse interactions
+        playSVG.append("circle")
+            .attr("cx", containerHeight / 2)
+            .attr("cy", containerHeight / 2)
+            .attr("r", containerHeight / 2)
+            .style("fill-opacity", "0.0")
             .style("cursor", "pointer")
             .on("click", togglePlayButton)
-            .classed("play", true);
+            .on("mouseenter", function(){
+                circleSymbol
+                    .transition()
+                    .attr("r", 1.2 * containerHeight / 2)
+                    .transition()
+                    .attr("r", containerHeight / 2);
+            });
+
 
     } else {
         var sliderBox = container.append("div")
