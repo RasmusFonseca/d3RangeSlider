@@ -44,7 +44,7 @@
 .play-container .button{
     fill-opacity: 0.0;
     stroke: #AAB;
-    stroke-width: 2;
+    stroke-width: 1.6;
 }
 
 .play-container .play, .play-container .stop {
@@ -52,3 +52,5 @@
     stroke: #AAB;
     stroke-width: 1;
 }
+
+

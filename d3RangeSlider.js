@@ -27,7 +27,9 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
     var sliderRange = {begin: rangeMin, end: rangeMin};
     var changeListeners = [];
     var container = d3.select(containerSelector);
-    var dragging = false; //Used to avoid rounding errors when recomputing sliderRange from UI
+    var playing = false;
+    var resumePlaying = false; // Used by drag-events to resume playing on release
+    var playingRate = 100;
     var containerHeight = container.node().offsetHeight;
 
     // Set up play button if requested
@@ -69,20 +71,26 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             .attr("cx", containerHeight / 2)
             .attr("cy", containerHeight / 2)
             .attr("r", containerHeight / 2)
+            .style("cursor", "pointer")
+            .on("click", togglePlayButton)
             .classed("button", true);
 
 
         var h = containerHeight;
-        playSVG.append("rect")
-            .style("visibility", "hidden")
+        var stopSymbol = playSVG.append("rect")
             .attr("x", 0.3*h)
             .attr("y", 0.3*h)
             .attr("width", 0.4*h)
             .attr("height", 0.4*h)
+            .style("visibility", "hidden")
+            .style("cursor", "pointer")
+            .on("click", togglePlayButton)
             .classed("stop", true);
 
-        playSVG.append("polygon")
+        var playSymbol = playSVG.append("polygon")
             .attr("points", (0.37*h) + "," + (0.2*h) + " " + (0.37*h) + "," + (0.8*h) + " " + (0.75*h) + "," + (0.5*h))
+            .style("cursor", "pointer")
+            .on("click", togglePlayButton)
             .classed("play", true);
 
     } else {
@@ -112,8 +120,9 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
         }
         var uirangeL = ratio * (conW - uirangeW);
 
-        slider.style("left", uirangeL + "px");
-        slider.style("width", uirangeW + "px");
+        slider
+            .style("left", uirangeL + "px")
+            .style("width", uirangeW + "px");
     }
 
     /** Update the `sliderRange` based on the `left` and `width` attributes of `slider` */
@@ -129,14 +138,8 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             var uislope = (rangeMax - rangeMin - rangeW) / (conW - uirangeW);
         }
         var rangeL = rangeMin + uislope * uirangeL;
-        var oldRangeW = sliderRange.end - sliderRange.begin;
         sliderRange.begin = Math.round(rangeL);
-        if (dragging) {
-            sliderRange.end = sliderRange.begin + oldRangeW;
-        } else {
-            sliderRange.end = Math.round(rangeL + rangeW);
-        }
-
+        sliderRange.end = Math.round(rangeL + rangeW);
 
         //Fire change listeners
         changeListeners.forEach(function (callback) {
@@ -148,6 +151,13 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
     var dragResizeE = d3.behavior.drag()
         .on("dragstart", function () {
             d3.event.sourceEvent.stopPropagation();
+            resumePlaying = playing;
+            playing = false;
+        })
+        .on("dragend", function () {
+            if (resumePlaying) {
+                startPlaying();
+            }
         })
         .on("drag", function () {
             var dx = d3.event.dx;
@@ -165,6 +175,13 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
         .on("dragstart", function () {
             this.startX = d3.mouse(this)[0];
             d3.event.sourceEvent.stopPropagation();
+            resumePlaying = playing;
+            playing = false;
+        })
+        .on("dragend", function () {
+            if (resumePlaying) {
+                startPlaying();
+            }
         })
         .on("drag", function () {
             var dx = d3.mouse(this)[0] - this.startX;
@@ -190,6 +207,13 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
     var dragMove = d3.behavior.drag()
         .on("dragstart", function () {
             d3.event.sourceEvent.stopPropagation();
+            resumePlaying = playing;
+            playing = false;
+        })
+        .on("dragend", function () {
+            if (resumePlaying) {
+                startPlaying();
+            }
         })
         .on("drag", function () {
             var dx = d3.event.dx;
@@ -210,7 +234,7 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
 
     //Click on bar
     sliderBox.on("mousedown", function (ev) {
-        var x = ev.offsetX;
+        var x = d3.mouse(sliderBox.node())[0];
         var props = {};
         var sliderWidth = parseFloat(slider.style("width"));
         var conWidth = sliderBox.node().clientWidth; //parseFloat(container.style("width"));
@@ -226,11 +250,6 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
     window.addEventListener("resize", function () {
         updateUIFromRange();
     });
-
-
-
-
-
 
     function onChange(callback){
         changeListeners.push(callback);
@@ -302,10 +321,61 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
         return {begin: sliderRange.begin, end: sliderRange.end};
     }
 
+    function togglePlayButton () {
+        if (playing) {
+            stopPlaying();
+        } else {
+            startPlaying();
+        }
+    }
+
+    function frameTick() {
+        if (!playing) {
+            return;
+        }
+
+        var limitWidth = rangeMax - rangeMin + 1;
+        var rangeWidth = sliderRange.end - sliderRange.begin + 1;
+        var delta = Math.min(Math.ceil(rangeWidth / 10), Math.ceil(limitWidth / 100));
+
+        // Check if playback has reached the end
+        if (sliderRange.end + delta > rangeMax) {
+            delta = rangeMax - sliderRange.end;
+            stopPlaying();
+        }
+
+        setRange(sliderRange.begin + delta, sliderRange.end + delta);
+
+        setTimeout(frameTick, playingRate);
+    }
+
+    function startPlaying(rate) {
+        if (rate !== undefined) {
+            playingRate = rate;
+        }
+
+        if (playing) {
+            return;
+        }
+
+        playing = true;
+        playSymbol.style("visibility", "hidden");
+        stopSymbol.style("visibility", "visible");
+        frameTick();
+    }
+
+    function stopPlaying() {
+        playing = false;
+        playSymbol.style("visibility", "visible");
+        stopSymbol.style("visibility", "hidden");
+    }
+
     setRange(sliderRange.begin, sliderRange.end);
 
     return {
         range: range,
+        startPlaying: startPlaying,
+        stopPlaying: stopPlaying,
         onChange: onChange
     };
 }
