@@ -359,15 +359,19 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
         }
 
         playing = true;
-        playSymbol.style("visibility", "hidden");
-        stopSymbol.style("visibility", "visible");
+        if (playButton) {
+            playSymbol.style("visibility", "hidden");
+            stopSymbol.style("visibility", "visible");
+        }
         frameTick();
     }
 
     function stopPlaying() {
         playing = false;
-        playSymbol.style("visibility", "visible");
-        stopSymbol.style("visibility", "hidden");
+        if (playButton) {
+            playSymbol.style("visibility", "visible");
+            stopSymbol.style("visibility", "hidden");
+        }
     }
 
     setRange(sliderRange.begin, sliderRange.end);
