@@ -71,7 +71,7 @@
         <div id="range-label"></div>
 
         <script type="text/javascript">
-            var slider = createD3RangeSlider(0, 100, "#container");
+            var slider = createD3RangeSlider(0, 100, "#container", true);
 
             slider.onChange(function(newRange){
                 d3.select("#range-label").html(newRange.begin + " &mdash; " + newRange.end);
