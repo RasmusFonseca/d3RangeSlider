@@ -68,5 +68,10 @@ slider.onChange(function(newRange){
 // Warning is printed that you attempted to set a range (8-11) outside the limits (0-10)
 // "{begin: 7, end: 10}" is printed in the console because of the listener
 slider.range(8);
-```
 
+// Access currently set range
+var curRange = slider.range();
+
+// "7-10" is written to the current position in the document
+document.write(curRange.begin + "-" + curRange.end); 
+```
