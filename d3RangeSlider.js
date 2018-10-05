@@ -158,13 +158,13 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
     }
 
     // configure drag behavior for handles and slider
-    var dragResizeE = d3.behavior.drag()
-        .on("dragstart", function () {
+    var dragResizeE = d3.drag()
+        .on("start", function () {
             d3.event.sourceEvent.stopPropagation();
             resumePlaying = playing;
             playing = false;
         })
-        .on("dragend", function () {
+        .on("end", function () {
             if (resumePlaying) {
                 startPlaying();
             }
@@ -181,14 +181,14 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             updateRangeFromUI();
         });
 
-    var dragResizeW = d3.behavior.drag()
-        .on("dragstart", function () {
+    var dragResizeW = d3.drag()
+        .on("start", function () {
             this.startX = d3.mouse(this)[0];
             d3.event.sourceEvent.stopPropagation();
             resumePlaying = playing;
             playing = false;
         })
-        .on("dragend", function () {
+        .on("end", function () {
             if (resumePlaying) {
                 startPlaying();
             }
@@ -214,13 +214,13 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             updateRangeFromUI();
         });
 
-    var dragMove = d3.behavior.drag()
-        .on("dragstart", function () {
+    var dragMove = d3.drag()
+        .on("start", function () {
             d3.event.sourceEvent.stopPropagation();
             resumePlaying = playing;
             playing = false;
         })
-        .on("dragend", function () {
+        .on("end", function () {
             if (resumePlaying) {
                 startPlaying();
             }
