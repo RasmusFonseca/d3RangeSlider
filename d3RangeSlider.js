@@ -124,7 +124,7 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
         var rangeW = sliderRange.end - sliderRange.begin;
         var slope = (conW - minWidth) / (rangeMax - rangeMin);
         var uirangeW = minWidth + rangeW * slope;
-        var ratio = sliderRange.begin / (rangeMax - rangeMin - rangeW);
+        var ratio = (sliderRange.begin - rangeMin) / (rangeMax - rangeMin - rangeW);
         if (isNaN(ratio)) {
             ratio = 0;
         }
