@@ -26,6 +26,7 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
 
     var sliderRange = {begin: rangeMin, end: rangeMin};
     var changeListeners = [];
+    var touchEndListeners = [];
     var container = d3.select(containerSelector);
     var playing = false;
     var resumePlaying = false; // Used by drag-events to resume playing on release
@@ -168,6 +169,9 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             if (resumePlaying) {
                 startPlaying();
             }
+            touchEndListeners.forEach(function (callback) {
+                callback({begin: sliderRange.begin, end: sliderRange.end});
+            });
         })
         .on("drag", function () {
             var dx = d3.event.dx;
@@ -192,6 +196,9 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             if (resumePlaying) {
                 startPlaying();
             }
+            touchEndListeners.forEach(function (callback) {
+                callback({begin: sliderRange.begin, end: sliderRange.end});
+            });
         })
         .on("drag", function () {
             var dx = d3.mouse(this)[0] - this.startX;
@@ -224,6 +231,9 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
             if (resumePlaying) {
                 startPlaying();
             }
+            touchEndListeners.forEach(function (callback) {
+                callback({begin: sliderRange.begin, end: sliderRange.end});
+            });
         })
         .on("drag", function () {
             var dx = d3.event.dx;
@@ -263,6 +273,11 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
 
     function onChange(callback){
         changeListeners.push(callback);
+        return this;
+    }
+
+    function onTouchEnd(callback){
+        touchEndListeners.push(callback);
         return this;
     }
 
@@ -390,6 +405,8 @@ function createD3RangeSlider (rangeMin, rangeMax, containerSelector, playButton)
         range: range,
         startPlaying: startPlaying,
         stopPlaying: stopPlaying,
-        onChange: onChange
+        onChange: onChange,
+        onTouchEnd: onTouchEnd,
+        updateUIFromRange: updateUIFromRange
     };
 }
